@@ -204,6 +204,29 @@ def render_html_iframe(html_content: str, *, height: int) -> None:
     st.html(html_content)
 
 
+def render_pulse_button_style(selector: str) -> None:
+    style = """
+        <style>
+        @keyframes discoveryPulse {{
+            0% {{ box-shadow: 0 0 0 0 rgba(30, 136, 229, 0.50); }}
+            70% {{ box-shadow: 0 0 0 12px rgba(30, 136, 229, 0); }}
+            100% {{ box-shadow: 0 0 0 0 rgba(30, 136, 229, 0); }}
+        }}
+        {selector} {{
+            background: linear-gradient(180deg, #1e88e5 0%, #1565c0 100%) !important;
+            border: 1px solid #0d47a1 !important;
+            color: #ffffff !important;
+            animation: discoveryPulse 1.7s infinite;
+            border-radius: 0.7rem !important;
+        }}
+        {selector}:hover {{
+            filter: brightness(1.05);
+        }}
+        </style>
+    """.format(selector=selector)
+    st.markdown(style, unsafe_allow_html=True)
+
+
 def send_email(
     server: smtplib.SMTP_SSL,
     sender_email: str,
@@ -543,6 +566,9 @@ def render_discovery(config: AppConfig, tracker: dict[str, bool]) -> None:
     if isinstance(ready_df, pd.DataFrame) and not ready_df.empty:
         st.dataframe(ready_df, width="stretch")
         xlsx_bytes = to_xlsx_bytes(ready_df, sheet_name="ReadyToSend")
+        render_pulse_button_style(
+            'div[data-testid="stDownloadButton"] button, div[data-testid="stDownloadButton"] a'
+        )
         if st.download_button(
             "Download Ready-to-Send XLSX",
             data=xlsx_bytes,
@@ -622,6 +648,7 @@ def render_outreach(config: AppConfig, attachment_paths: list[Path], missing_fil
         st.warning("Missing attachments: " + ", ".join(missing_files))
         can_send = False
 
+    render_pulse_button_style('div[data-testid="stButton"] button[kind="primary"]')
     if st.button("Send Outreach", type="primary", disabled=not can_send):
         sent = 0
         failed = 0
