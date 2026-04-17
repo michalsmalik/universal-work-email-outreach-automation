@@ -1,199 +1,133 @@
 # Universal Outreach Automator
 
-Streamlit app for hotel discovery + outreach email sending, with AI-generated custom notes, CSV/XLSX workflow, and reusable CV attachments.
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
 
-## Usage of AI
-This project was generated with AI, mostly by:
-- Copilot VS Code Extension
-- Gemini 
+A Streamlit-based application designed to automate the job application process (e.g., in the hospitality sector in Norway). It discovers target businesses via Google Maps, extracts contact emails, generates personalized AI cover notes using Google Gemini, and sends professional HTML-first outreach emails with PDF attachments.
 
-## What This Project Does
+> **Note on Creation:** The core architecture and logic of this project were built with the assistance of AI tools, primarily GitHub Copilot and Google Gemini.
 
-The app has 3 modules:
+---
 
-1. City Generator
-- Tracks used vs unused cities from `cities.txt` and `discovery_tracker.json`.
+## 🚀 Features at a Glance
 
-2. Discovery
-- Searches hospitality targets (Google Places).
-- Crawls websites for contact emails.
-- Generates one personalized `custom_note` per row using Gemini.
-- Shows Gemini diagnostics (AI vs fallback counts, fallback reasons, model attempts).
+The app consists of 3 integrated modules:
 
-3. Outreach
-- Sends HTML-first personalized emails from discovered/uploaded data.
-- Includes plain-text fallback part in MIME.
-- Supports dry run preview mode and attachment checks.
+1. **City Generator**
+   - Tracks used vs. unused cities from `cities.txt`.
+   - Prevents you from searching the same location twice.
 
-## Current Project Layout
+2. **Discovery Engine**
+   - Searches for specific business types (Hotels, Camping, Gjestegård, etc.) using Google Places API.
+   - Crawls business websites to extract public contact emails.
+   - Uses **Gemini 1.5 Flash** to generate a unique, one-sentence compliment (`custom_note`) for each business to avoid spam-like repetition.
+   - Includes a Global Email Registry (`sent_emails_registry.json`) to guarantee you never email the same company twice.
 
-```text
-.
-├── app.py
-├── example.py
-├── requirements.txt
-├── .env.example
-├── README.md
-├── cities.txt
-├── discovery_tracker.json
-├── sent_emails_registry.json
-├── assets/
-├── cvs/
-├── src/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── core_logic.py
-│   ├── data_loader.py
-│   ├── emailer.py
-│   ├── templates.py
-│   └── ui.py
-└── tests/
-        ├── test_logic.py
-        └── test_gemini_note.py
-```
+3. **Outreach Sender**
+   - Sends HTML-first personalized emails.
+   - Automatically includes a clickable LinkedIn icon and attaches CVs from the `/cvs` folder.
+   - Built-in **Dry Run** mode to safely preview all emails before establishing an SMTP connection.
 
-## Install
+---
 
-```bash
+## 🛠️ Installation
+
+**1. Clone the repository**
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
+
+**2. Set up the virtual environment**
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
+
+**3. Configure Environment Variables**
 cp .env.example .env
-```
+Open the `.env` file and fill in your credentials.
 
-## Run
+---
 
-```bash
-streamlit run app.py
-```
-
-## Environment Variables
+## ⚙️ Environment Configuration (`.env`)
 
 Main values loaded from `.env`:
 
-```env
+# Gmail SMTP Credentials (use App Passwords, not your main password)
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASSWORD=your_app_password
 
+# Personal Info
 SENDER_NAME=Your Name
 SENDER_PHONE=+421...
 LINKEDIN_URL=https://www.linkedin.com/in/your-profile/
 LINKEDIN_LABEL=LinkedIn Profile
 
-MAPS_API_KEY=...
-GEMINI_API_KEY=...
+# API Keys
+MAPS_API_KEY=your_google_maps_key
+GEMINI_API_KEY=your_gemini_key
 
+# Search Parameters
 BUSINESS_TYPE=Hotels
 COUNTRY=Norway
 SEARCH_QUERY={business_type} in {city}, {country}
 ATTACHMENTS=cv_file_1.pdf,cv_file_2.pdf
-TRASH_EMAIL_PATTERNS=
-```
+TRASH_EMAIL_PATTERNS=sentry,wix,noreply
 
-Notes:
-- `EMAIL_PASSWORD` is required only for real sending (`Dry Run` off).
-- `ATTACHMENTS` should match file names present in `cvs/`.
+*Note: `EMAIL_PASSWORD` is required only for real sending. `ATTACHMENTS` must exactly match the filenames in the `cvs/` folder.*
 
-## Data Expectations
+---
 
-Discovery output and outreach input should contain (at minimum):
+## 💻 Usage
 
-- `email`
-- `target_company`
-- `target_city`
-- `custom_note`
+Run the Streamlit UI:
+streamlit run app.py
 
-You can still use custom templates with additional placeholders, but columns must exist in the file.
-
-## Gemini Behavior (Discovery)
-
-Gemini note generation is integrated in `app.py` and includes:
-
-- strict single-sentence prompting
-- anti-list formatting constraints
-- sentence normalization/cleanup
-- retry when output is incomplete
-- fallback note with diagnostics if generation fails
-
-Use Discovery -> `Gemini Note Diagnostics` to inspect:
-
-- AI vs fallback counts
-- fallback reasons
-- discovered/attempted Gemini models
-
-Use `Test Gemini note generation` before full discovery runs.
-
-## Email Sending
-
-Outreach is HTML-first:
-
-- main email body is HTML template
-- plain-text fallback is included for email clients that do not render HTML
-- dry run previews each generated message without SMTP send
-
-Real sending uses SMTP SSL (`smtp.gmail.com:465`).
-
-## CLI Example Script
-
-`example.py` is an optional CLI helper for non-UI runs.
+### Optional: CLI Mode
+`example.py` is an optional CLI helper for running campaigns without the UI.
 
 Dry run:
-
-```bash
 python example.py --input ready_to_send.csv
-```
 
-Real send:
-
-```bash
-python example.py --input ready_to_send.xlsx --send
-```
-
-With attachments:
-
-```bash
+Real send with specific attachments:
 python example.py --input ready_to_send.xlsx --send \
-    --attachment cvs/CV_Michal_Stanislav_Malik.pdf \
-    --attachment cvs/CV_Natalia_Hudecova.pdf
-```
+    --attachment cvs/CV_English.pdf
 
-## Tests
+---
 
-Run focused Gemini tests:
+## 🧠 Gemini AI Behavior & Testing
 
-```bash
+Gemini note generation is strictly prompted to output single sentences and avoid list formatting.
+Use **Discovery -> Gemini Note Diagnostics** in the UI to inspect API health, token limits, and fallback reasons.
+
+Run focused unit tests using pytest:
 python -m pytest tests/test_gemini_note.py
-```
 
-Current tests cover:
+---
 
-- AI success path
-- fallback path
-- failure handling
-- per-company generation call behavior
+## ⚠️ Disclaimer & Best Practices (Please Read)
 
-## Important Files
+- **Rate Limits:** The free tier of the Gemini API has strict rate limits (typically 15 Requests Per Minute). The script includes a `time.sleep(4)` throttle in the discovery loop to prevent crashes. Be patient during large discoveries.
+- **Gmail SMTP:** Sending hundreds of emails rapidly via `smtp.gmail.com` may result in a temporary block from Google. Use this tool responsibly for targeted outreach, not mass spam.
+- **Data Privacy:** Do NOT commit your `.env` file, `sent_emails_registry.json`, or the `cvs/` folder to a public repository. Ensure your `.gitignore` is properly configured.
 
-- `app.py`: primary Streamlit app and workflow orchestration
-- `src/templates.py`: editable defaults and campaign text
-- `src/core_logic.py`: deduplication, validation, registry operations
-- `tests/test_gemini_note.py`: Gemini unit tests
-- `cvs/README.md`: attachment folder rules
+---
 
-## Troubleshooting
+## 🤝 Contributing
 
-1. Gemini always fallbacks
-- verify `GEMINI_API_KEY`
-- use `Test Gemini note generation`
-- inspect Discovery diagnostics for model errors
+Contributions, issues, and feature requests are highly welcome! Since this project was largely AI-generated, there is always room for human optimization, better error handling, and cleaner code.
 
-2. Emails not sending
-- verify `EMAIL_USER` + `EMAIL_PASSWORD`
-- keep `Dry Run` off only when credentials are valid
+**How to contribute:**
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-3. Missing attachments
-- ensure file names in `ATTACHMENTS` exactly match files in `cvs/`
+If you find a bug or have an idea, please open an **Issue** first to discuss it.
 
-4. Invalid template placeholders
-- make sure every placeholder key exists as a column in your input dataframe
+---
+
+## 📄 License
+
+Distributed under the **MIT License**. See `LICENSE` for more information.

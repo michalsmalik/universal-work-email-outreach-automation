@@ -5,7 +5,7 @@ __pycache__/
 .pytest_cache/
 .env
 .streamlit/
-cvs/*
+cvs/*.pdf
 *.log
 *.tmp
 *.bak
