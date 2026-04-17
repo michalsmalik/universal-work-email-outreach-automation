@@ -1,0 +1,156 @@
+"""Example template defaults for open-source sharing.
+
+Copy these values into src/templates.py or a local configuration layer when you
+want placeholder-only defaults without any personal or campaign-specific data.
+"""
+
+from __future__ import annotations
+
+YOUR_NAME = "YOUR_NAME"
+YOUR_API_KEY = "YOUR_API_KEY"
+
+ALLOWED_CV_EXTENSIONS = {".pdf", ".doc", ".docx"}
+MANDATORY_CV_FILES = (
+    "YOUR_CV_1.pdf",
+    "YOUR_CV_2.pdf",
+)
+
+DEFAULT_ATTACHMENTS: tuple[str, ...] = ()
+
+DEFAULT_SENDER_NAME = YOUR_NAME
+DEFAULT_SENDER_PHONE = "YOUR_PHONE"
+DEFAULT_LINKEDIN_URL = "https://www.linkedin.com/in/YOUR_PROFILE/"
+DEFAULT_LINKEDIN_LABEL = "LinkedIn Profile"
+
+DEFAULT_BUSINESS_TYPE = "YOUR_BUSINESS_TYPE"
+DEFAULT_COUNTRY = "YOUR_COUNTRY"
+
+TRACKER_FILE = "discovery_tracker.json"
+CITIES_FILE = "cities.txt"
+SENT_EMAILS_REGISTRY_FILE = "sent_emails_registry.json"
+
+NAV_ORDER = ["City Generator", "Discovery", "Outreach"]
+NAV_QUERY_PARAM = "module"
+
+REQUEST_TIMEOUT = 12
+MAX_SUBPAGE_CHECKS = 20
+GOOGLE_PLACES_TEXT_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+GOOGLE_PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json"
+
+DEFAULT_HTTP_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/124.0.0.0 Safari/537.36"
+)
+
+CONTACT_LINK_KEYWORDS = (
+    "contact",
+    "about",
+    "team",
+    "company",
+    "imprint",
+    "booking",
+    "reservation",
+    "kontakt",
+    "reservasjon",
+)
+
+DISCOVERY_CATEGORY_TERMS = [
+    "Hotels",
+    "Guesthouses",
+    "Pensions",
+    "Inns",
+    "Resorts",
+    "Motels",
+    "Hostels",
+    "Lodges",
+    "Bed and Breakfast",
+    "Accommodation",
+]
+
+DISCOVERY_AREA_MODIFIERS = [
+    "city center",
+    "downtown",
+    "old town",
+    "near airport",
+    "near train station",
+    "waterfront",
+    "mountain",
+    "budget",
+    "family",
+    "boutique",
+]
+
+DEFAULT_SEARCH_QUERY_TEMPLATE = "{business_type} in {city}, {country}"
+DEFAULT_GEMINI_TEMPERATURE = 0.8
+GEMINI_NOTE_FOCI = (
+    "architecture",
+    "nature",
+    "vibe",
+)
+GEMINI_NOTE_PROMPT_TEMPLATE = (
+    "Write exactly one short compliment sentence in English (max 15 words). "
+    "Focus on the {focus} of {company} in {city}. "
+    "Use high variety in sentence structures and phrasing. "
+    "Avoid repetitive openings and never use patterns like 'Your setting in...'. "
+    "Do not mention the same angle twice across different outputs."
+)
+
+DEFAULT_OUTREACH_SUBJECT_TEMPLATE = "Seasonal opportunity inquiry / {target_company}"
+DEFAULT_OUTREACH_BODY_TEMPLATE = """Dear Hiring Team,
+
+My name is {sender_name}. I am contacting you regarding potential seasonal opportunities at {target_company} in {target_city}.
+
+{custom_note}
+
+I would be happy to share my availability, relevant experience, and practical details for collaboration.
+
+Best regards,
+{sender_name}
+Phone: {sender_phone}
+{linkedin_label}
+"""
+
+DEFAULT_OUTREACH_HTML_TEMPLATE = """<p>Hello,</p>
+<p>I am reaching out regarding potential seasonal opportunities at <strong>{target_company}</strong> in <strong>{target_city}</strong>.</p>
+<p>{custom_note}</p>
+<p>I would be happy to share more details and availability in a quick call.</p>
+<p>Best regards,</p>
+"""
+
+DEFAULT_EMAIL_BLACKLIST = {
+    "example.com",
+    "sentry.io",
+    "sentry-next.wixpress.com",
+    "preact@10.29.1.js",
+    "bakeriet@choice.no",
+    "name@email.com",
+    "post@smtp.gulendiveresort.com",
+    "wix.com",
+    "wixpress.com",
+    "domain.no",
+    "domene.no",
+    "user@domain.com",
+    "resepsjon@mogjestegaard.no",
+    "stott-top-of-helgeland-@carlfilipolsson.mp",
+}
+
+COMPANY_CLEANUP_TERMS = (
+    r"\bAS\b",
+    r"\bHotels?\b",
+    r"\bGuesthouse\b",
+)
+COMPANY_BY_CHAIN_PATTERN = r"\s+by\s+.+$"
+
+DEFAULT_CITIES = [
+    "Oslo",
+    "Bergen",
+    "Trondheim",
+    "Stavanger",
+    "Stockholm",
+    "Copenhagen",
+    "Helsinki",
+    "Reykjavik",
+    "Hamburg",
+    "Amsterdam",
+]
