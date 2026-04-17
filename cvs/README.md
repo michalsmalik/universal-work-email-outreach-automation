@@ -13,7 +13,7 @@ Place CV files used for outreach attachments in this folder.
 If `.env` contains:
 
 ```env
-ATTACHMENTS=CV_Michal_Stanislav_Malik.pdf,CV_Natalia_Hudecova.pdf
+ATTACHMENTS=CV_YourName1.pdf,CV_YourName2.pdf
 ```
 
 then this folder must include exactly those file names.
